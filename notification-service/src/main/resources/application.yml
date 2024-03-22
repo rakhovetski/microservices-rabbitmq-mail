@@ -1,0 +1,30 @@
+server:
+  port: 8100
+
+spring:
+  datasource:
+    username: not-user
+    password: not-pass
+    url: jdbc:postgresql://db:5432/not-db
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    user: not-user
+    password: not-pass
+    url: jdbc:postgresql://db:5432/not-db
+    locations: "classpath:db/migration"
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
+
+
+rabbitmq:
+  queue:
+      name: notQueue
+  exchange:
+    name: notTopicExchange
+  routing:
+    key: notRoutingKey

@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  notification-service:
+    build:
+      context: notification-service/.
+    depends_on:
+      - db
+      - rabbitmq
+      - sender-service
+    ports:
+      - "8100:8100"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/not-db
+      SPRING_DATASOURCE_USERNAME: not-user
+      SPRING_DATASOURCE_PASSWORD: not-pass
+      SPRING_RABBITMQ_HOST: rabbitmq
+      RABBIT_HOST: rabbitmq
+      RABBIT_PORT: 5672
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
+    command: ["sh", "-c", "sleep 10 && java -jar /app.jar"]
+
+
+  sender-service:
+    build:
+      context: sender-service/.
+    depends_on:
+      - rabbitmq
+    ports:
+      - "8200:8200"
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      RABBIT_HOST: rabbitmq
+      RABBIT_PORT: 5672
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
+    command: [ "sh", "-c", "sleep 10 && java -jar /app.jar" ]
+
+  db:
+    image: postgres:14.11-alpine3.19
+    environment:
+      - POSTGRES_DB=not-db
+      - POSTGRES_USER=not-user
+      - POSTGRES_PASSWORD=not-pass
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest

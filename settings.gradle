@@ -1,0 +1,4 @@
+rootProject.name = 'rabbitmq-service'
+include 'notification-service'
+include 'sender-service'
+
